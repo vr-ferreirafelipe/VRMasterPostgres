@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  db:
+    container_name: vrmaster-java
+    image: postgres:12
+    restart: always
+    environment:
+      POSTGRES_DB: vrmaster-java
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-vr-master-java:/var/lib/postgresql/data
+      - ./backups/backup.sql:/backups/backup.sql:delegated
+      - ./configs/postgresql.conf:/etc/postgresql/postgresql.conf:cached
+      - ./configs/pg_hba.conf:/etc/postgresql/pg_hba.conf:cached
+      - ./restore-backup.sh/:/docker-entrypoint-initdb.d/restore-backup.sh:delegated
+    networks:
+      - vrmaster-java
+
+volumes:
+  db-vr-master-java:
+
+networks:
+  vrmaster-java:
+    driver: bridge
+
